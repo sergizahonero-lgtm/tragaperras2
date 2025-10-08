@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tragaperras - Mini Slot Machine</title>
+  <style>
+    body {
+      background: linear-gradient(180deg,#071027 0%, #071d2a 60%);
+      color:#e6eef8;
+      font-family: Arial, sans-serif;
+      display:flex;align-items:center;justify-content:center;
+      height:100vh;margin:0;
+    }
+    .container {background:rgba(255,255,255,0.05);padding:20px;border-radius:10px;text-align:center;}
+    .reels {display:flex;justify-content:center;gap:10px;margin-bottom:20px;}
+    .reel {width:100px;height:120px;overflow:hidden;border:2px solid #555;border-radius:10px;background:#000;display:flex;align-items:center;justify-content:center;}
+    .symbol img {max-width:80px;max-height:80px;}
+    button {padding:10px 20px;font-weight:bold;border:none;border-radius:8px;background:#f59e0b;color:#071027;cursor:pointer;}
+    ul {text-align:left;display:inline-block;margin-top:10px;}
+    li img {height:20px;vertical-align:middle;margin-right:6px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎰 Tragaperras Felinas</h1>
+    <div class="reels" id="reels">
+      <div class="reel" id="reel-1"></div>
+      <div class="reel" id="reel-2"></div>
+      <div class="reel" id="reel-3"></div>
+    </div>
+    <button id="spin">Girar</button>
+    <div id="result" style="margin-top:10px;font-weight:bold;"></div>
+    <div style="margin-top:20px;">
+      <strong>Tabla de pagos</strong>
+      <ul>
+        <li><img src="img/albel.png"> = x100</li>
+        <li><img src="img/diamante.png"> = x40</li>
+        <li><img src="img/cereza.png"> = x20</li>
+        <li><img src="img/limon.png"> = x15</li>
+        <li><img src="img/naranja.png"> = x12</li>
+        <li><img src="img/uva.png"> = x10</li>
+        <li><img src="img/campana.png"> = x8</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const symbols = [
+      'img/cereza.png',
+      'img/limon.png',
+      'img/naranja.png',
+      'img/uva.png',
+      'img/diamante.png',
+      'img/albel.png',
+      'img/campana.png'
+    ];
+
+    const reels = [
+      document.getElementById('reel-1'),
+      document.getElementById('reel-2'),
+      document.getElementById('reel-3')
+    ];
+
+    const resultEl = document.getElementById('result');
+    document.getElementById('spin').addEventListener('click', spin);
+
+    function spin() {
+      const result = [];
+      reels.forEach((reel, i) => {
+        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+        reel.innerHTML = `<div class='symbol'><img src='${symbol}'></div>`;
+        result.push(symbol);
+      });
+
+      const win = evaluate(result);
+      resultEl.textContent = win > 0 ? `¡Ganaste x${win}!` : 'Sin premio, inténtalo de nuevo';
+    }
+
+    function evaluate(result) {
+      const [a,b,c] = result;
+      if (a === b && b === c) {
+        if (a.includes('albel.png')) return 100;
+        if (a.includes('diamante.png')) return 40;
+        if (a.includes('cereza.png')) return 20;
+        if (a.includes('limon.png')) return 15;
+        if (a.includes('naranja.png')) return 12;
+        if (a.includes('uva.png')) return 10;
+        if (a.includes('campana.png')) return 8;
+      }
+      if (a === b || a === c || b === c) return 2;
+      return 0;
+    }
+  </script>
+</body>
+</html>
